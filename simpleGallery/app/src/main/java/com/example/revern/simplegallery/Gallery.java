@@ -1,10 +1,16 @@
 package com.example.revern.simplegallery;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +23,19 @@ import android.widget.ImageView;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Gallery extends AppCompatActivity {
+public class Gallery extends AppCompatActivity implements AdapterView.OnItemClickListener{
     GridView gridView;
     ArrayList<File> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(Build.VERSION.SDK_INT>=21){
+            TransitionInflater inflater = TransitionInflater.from(this);
+            Transition transition = inflater.inflateTransition(R.transition.transition_a);
+            getWindow().setExitTransition(transition);Slide slide = new Slide();
+            slide.setDuration(1000);
+            getWindow().setEnterTransition(slide);
+            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).inflateTransition(R.transition.shared_element_transition));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         list = imageReader(Environment.getExternalStorageDirectory());
@@ -29,14 +43,7 @@ public class Gallery extends AppCompatActivity {
 
         gridView= (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(new GridAdapter());
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(Gallery.this, FullPictureActivity.class);
-                intent.putExtra(FullPictureActivity.EXTRA_PICTURE, list.get(position).toString());
-                startActivity(intent);
-            }
-        });
+        gridView.setOnItemClickListener(this);
 
     }
     ArrayList<File> imageReader(File root){
@@ -79,6 +86,18 @@ public class Gallery extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        view.setTransitionName("selectedPic");
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, view, view.getTransitionName());
+        Intent intent = new Intent(Gallery.this, FullPictureActivity.class);
+        intent.putExtra(FullPictureActivity.EXTRA_PICTURE, list.get(position).toString());
+        startActivity(intent, options.toBundle());
+    }
+
     public class GridAdapter extends BaseAdapter {
 
         @Override

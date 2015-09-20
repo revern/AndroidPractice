@@ -1,8 +1,10 @@
 package com.example.revern.simplegallery;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.TransitionInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -12,10 +14,11 @@ public class FullPictureActivity extends AppCompatActivity {
     ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(Build.VERSION.SDK_INT>=21) {
+            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.shared_element_transition));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_picture);
-//        Intent intent = getIntent();
-//        File f=intent.getExtras().getParcelable(EXTRA_PICTURE);
         String file = getIntent().getStringExtra(EXTRA_PICTURE);
         imageView = (ImageView) findViewById(R.id.full_pic_view);
         imageView.setImageURI(Uri.parse(file));

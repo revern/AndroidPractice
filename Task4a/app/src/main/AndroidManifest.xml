@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.revern.task4a" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".Service.MyService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <receiver
+            android:name=".Receivers.TimeReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+        <receiver
+            android:name=".Receivers.OffReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+        <receiver
+            android:name=".Receivers.RebootReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+        <receiver
+            android:name=".Receivers.BatteryReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+        <receiver
+            android:name=".Receivers.WifiReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+    </application>
+
+</manifest>
